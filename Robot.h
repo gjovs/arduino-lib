@@ -16,8 +16,8 @@ private:
 	AF_DCMotor motor[4] = {1,2,3,4};
 	
 	//Instance of Ultra
-
 	Ultrasonic ultrassonic = { 12,13 };
+	int minDistanceValue;
 	
 	//Value of the curve (degree)
 	int curvaValue;
@@ -29,7 +29,7 @@ private:
 public:
 
 	//Init
-	void init(int speed, int curva_degree);
+	void init(int speed, int curva_degree, int distanceValue);
 	
 	//Sensor Cor Methods
 	void setSensoresDeCorEsquerda();
@@ -38,15 +38,16 @@ public:
 	char getColorDireita();
 	//Motor Methods
 	void setMotores(int speed);
-	void andarFrente();
-	void curva(int lado);
+	void runForward(int time);
+	void turn(int lado);
 	AF_DCMotor getMotor(int index);
 
 	//Sensor Ultra Methods
 	double getDistance();
 
 	//Follow line
-
 	void followLine();
 	
+	//Dodge Obstacule
+	void dodgeObstacule();
 };

@@ -1,9 +1,10 @@
 #include "Robot.h"
 
-void Robot::init(int speed, int curva_degree)
+void Robot::init(int speed, int curva_degree, int distanceValue)
 {
 	setMotores(speed);
 	this->curvaValue = curva_degree;
+	this->minDistanceValue = distanceValue;
 	setSensoresDeCorDireita();
 	setSensoresDeCorEsquerda();
 
@@ -18,7 +19,6 @@ void Robot::init(int speed, int curva_degree)
 double Robot::getDistance() {
 	return this->ultrassonic.read();
 }
-1
 void Robot::setSensoresDeCorEsquerda()
 {
 	for (int i = 0; i < 4; i++) {
@@ -130,14 +130,14 @@ void Robot::setMotores(int speed)
 		this->motor[i].setSpeed(speed);
 	}
 }
-void Robot::andarFrente()
+void Robot::runForward(int time = 500)
 {
 	for (int i = 0; i < 4; ++i) {
 		this->motor[i].run(FORWARD);
 	}
-	delay(500);
+	delay(time);
 }
-void Robot::curva(int lado)
+void Robot::turn(int lado)
 {
 	int delayValue = this->curvaValue * 10;
 	//Positivo -> direita
@@ -195,20 +195,44 @@ void Robot::followLine()
 	//Andar Frente
 	if (getColorDireita() == 'B' && getColorEsquerda() == 'B')
 	{
-		andarFrente();
+		runForward();
 	}
 	if (getColorDireita() == 'W' && getColorEsquerda() == 'W') {
-		andarFrente();
+		runForward();
 	}
 
 	//Curvas 
 	if (getColorDireita() == 'B' && getColorEsquerda() == 'W')
 	{
-		curva(1);
+		turn(1);
 	}
 	if (getColorDireita() == 'W' && getColorEsquerda() == 'B')
 	{
-		curva(-1);
+		turn(-1);
 	}
 
+}
+
+//Dodge Obstacule
+
+void Robot::dodgeObstacule()
+{
+	int counter = 0;
+
+	while (getDistance() <= this->minDistanceValue)
+	{
+		turn(1);
+		counter++;
+	}
+	
+	runForward(2000);
+	
+	counter = counter * 2;
+
+	for (int i = counter; i <= 0; --i)
+	{
+		turn(-1);
+	}
+	
+	runForward(2000);
 }
