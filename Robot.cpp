@@ -19,6 +19,7 @@ void Robot::init(int speed, int curva_degree, int distanceValue)
 double Robot::getDistance() {
 	return this->ultrassonic.read();
 }
+
 void Robot::setSensoresDeCorEsquerda()
 {
 	for (int i = 0; i < 4; i++) {
@@ -52,7 +53,10 @@ char Robot::getColorEsquerda()
 	//Green
 	if (rgb[1] > rgb[0] && rgb[1] > rgb[2]) 
 	{
-		return color = 'G';
+		if (validateGreen('L')) {
+			return color = 'G';
+		};
+		return color = 'B';
 	}
 }
 char Robot::getColorDireita()
@@ -73,32 +77,36 @@ char Robot::getColorDireita()
 	//Green
 	if (rgb[1] > rgb[0] && rgb[1] > rgb[2])
 	{
-		return color = 'G';
+		if (validateGreen('D')) {
+			return color = 'G';
+		};
+		return color = 'B';
 	}
 }
 
-int* Robot::getDataColorEsquerda() {
+int* Robot::getDataColorEsquerda() 
+{
 	
-static int data[3];
+	static int data[3];
 
-digitalWrite(this->pinoSensorEsquerda[2], LOW);
-digitalWrite(this->pinoSensorEsquerda[3], LOW);
+	digitalWrite(this->pinoSensorEsquerda[2], LOW);
+	digitalWrite(this->pinoSensorEsquerda[3], LOW);
 
-int redValue = pulseIn(this->pinoSensorEsquerda[4], digitalRead(this->pinoSensorEsquerda[4]) == HIGH ? LOW : HIGH);
-digitalWrite(this->pinoSensorEsquerda[2], HIGH);
-delay(200);
+	int redValue = this->getRed('L');
+	digitalWrite(this->pinoSensorEsquerda[2], HIGH);
+	delay(200);
 
-int greenValue = pulseIn(this->pinoSensorEsquerda[4], digitalRead(this->pinoSensorEsquerda[4]) == HIGH ? LOW : HIGH);
-digitalWrite(this->pinoSensorEsquerda[3], HIGH);
-delay(200);
+	int greenValue = this->getGreen('L');
+	digitalWrite(this->pinoSensorEsquerda[3], HIGH);
+	delay(200);
 
-int blueValue = pulseIn(this->pinoSensorEsquerda[4], digitalRead(this->pinoSensorEsquerda[4]) == HIGH ? LOW : HIGH);
+	int blueValue = getBlue('L');
 
-data[0] = redValue;
-data[1] = greenValue;
-data[2] = blueValue;
+	data[0] = redValue;
+	data[1] = greenValue;
+	data[2] = blueValue;
 
-return data;
+	return data;
 }
 int* Robot::getDataColorDireita() {
 
@@ -107,15 +115,15 @@ int* Robot::getDataColorDireita() {
 	digitalWrite(this->pinoSensorDireita[2], LOW);
 	digitalWrite(this->pinoSensorDireita[3], LOW);
 
-	int redValue = pulseIn(this->pinoSensorDireita[4], digitalRead(this->pinoSensorDireita[4]) == HIGH ? LOW : HIGH);
+	int redValue = this->getRed('D');
 	digitalWrite(this->pinoSensorDireita[2], HIGH);
 	delay(200);
 
-	int greenValue = pulseIn(this->pinoSensorDireita[4], digitalRead(this->pinoSensorDireita[4]) == HIGH ? LOW : HIGH);
+	int greenValue = getGreen('D');
 	digitalWrite(this->pinoSensorDireita[3], HIGH);
 	delay(200);
 
-	int blueValue = pulseIn(this->pinoSensorDireita[4], digitalRead(this->pinoSensorDireita[4]) == HIGH ? LOW : HIGH);
+	int blueValue = getBlue('D');
 
 	data[0] = redValue;
 	data[1] = greenValue;
@@ -123,7 +131,92 @@ int* Robot::getDataColorDireita() {
 
 	return data;
 }
+bool Robot::validateGreen(char lado)
+{
+	stop();
+	delay(500);
+	if (lado == 'L')
+	{
+		
+		digitalWrite(this->pinoSensorEsquerda[2], LOW);
+		digitalWrite(this->pinoSensorEsquerda[3], LOW);
 
+		int redValue = this->getRed('L');
+		digitalWrite(this->pinoSensorEsquerda[2], HIGH);
+		delay(200);
+
+		int greenValue = this->getGreen('L');
+		digitalWrite(this->pinoSensorEsquerda[3], HIGH);
+		delay(200);
+
+		int blueValue = getBlue('L');
+
+		if (greenValue > redValue && greenValue > blueValue)
+		{
+			return true;
+		}
+		return false;
+	} 
+	else
+	{
+		digitalWrite(this->pinoSensorDireita[2], LOW);
+		digitalWrite(this->pinoSensorDireita[3], LOW);
+
+		int redValue = this->getRed('D');
+		digitalWrite(this->pinoSensorDireita[2], HIGH);
+		delay(200);
+
+		int greenValue = getGreen('D');
+		digitalWrite(this->pinoSensorDireita[3], HIGH);
+		delay(200);
+
+		int blueValue = getBlue('D');
+
+		if (greenValue > redValue && greenValue > blueValue)
+		{
+			return true;
+		}
+		return false;
+	}
+
+}
+
+//Getter Colors Values
+int Robot::getRed(char lado)
+{
+	if (lado  == 'L')
+	{
+		return pulseIn(this->pinoSensorEsquerda[4], digitalRead(this->pinoSensorEsquerda[4]) == HIGH ? LOW : HIGH);
+	}
+	else
+	{
+		return pulseIn(this->pinoSensorDireita[4], digitalRead(this->pinoSensorDireita[4]) == HIGH ? LOW : HIGH);
+	}
+}
+int Robot::getGreen(char lado)
+{
+	if (lado == 'L')
+	{
+		return pulseIn(this->pinoSensorEsquerda[4], digitalRead(this->pinoSensorEsquerda[4]) == HIGH ? LOW : HIGH);
+	}
+	else
+	{
+		return pulseIn(this->pinoSensorDireita[4], digitalRead(this->pinoSensorDireita[4]) == HIGH ? LOW : HIGH);
+	}
+}
+int Robot::getBlue(char lado)
+{
+	if (lado == 'L')
+	{
+		return pulseIn(this->pinoSensorEsquerda[4], digitalRead(this->pinoSensorEsquerda[4]) == HIGH ? LOW : HIGH);
+	}
+	else
+	{
+		return pulseIn(this->pinoSensorDireita[4], digitalRead(this->pinoSensorDireita[4]) == HIGH ? LOW : HIGH);
+	}
+}
+
+// Motores
 void Robot::setMotores(int speed)
 {
 	for (int i = 0; i < 4; ++i) {
@@ -168,6 +261,12 @@ void Robot::turn(int lado)
 
 		getMotor(3).run(FORWARD);
 		delay(delayValue);
+	}
+}
+void Robot::stop()
+{
+	for (int i = 0; i < 4; ++i) {
+		this->motor[i].run(RELEASE);
 	}
 }
 AF_DCMotor Robot::getMotor(int index)
@@ -218,6 +317,8 @@ void Robot::followLine()
 void Robot::dodgeObstacule()
 {
 	int counter = 0;
+	
+	stop();
 
 	while (getDistance() <= this->minDistanceValue)
 	{

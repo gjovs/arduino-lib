@@ -25,6 +25,13 @@ private:
 	//GET - Data of Sensors
 	int* getDataColorEsquerda();
 	int* getDataColorDireita();
+	//validate
+	bool validateGreen(char lado);
+	//Get Raw Data
+	int getRed(char lado);
+	int getGreen(char lado);
+	int getBlue(char lado);
+
 
 public:
 
@@ -36,10 +43,12 @@ public:
 	void setSensoresDeCorDireita();
 	char getColorEsquerda();
 	char getColorDireita();
+	
 	//Motor Methods
 	void setMotores(int speed);
 	void runForward(int time);
 	void turn(int lado);
+	void stop();
 	AF_DCMotor getMotor(int index);
 
 	//Sensor Ultra Methods
