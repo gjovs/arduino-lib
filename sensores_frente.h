@@ -5,7 +5,9 @@
 
   
    void setSensoresFrente();
-   int* getSensoresFrente();
+   int getSensorFrenteMeio();
+   int getSensorFrenteEsquerda();
+   int getSensorFrenteDireita();
 
 
 #endif

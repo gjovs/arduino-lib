@@ -6,6 +6,11 @@
   
    void setMotores();
    void frente();
+   void stop();
+   void virarEsquerda();
+   void virarDireita();
+   void setVeloMotoresEsquerda(int velocidade);
+   void setVeloMotoresDireita(int velocidade);
    
 
 

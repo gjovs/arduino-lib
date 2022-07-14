@@ -1,11 +1,11 @@
 #include "sensores_meio.h"
 #include <tcs3200.h>
+
 //Instancias e pinos dos sensores Utilizados;
-tcs3200 colorLeft = { 46, 44, 50, 52, 48 };
-tcs3200 colorRight = { 34, 32, 26, 28, 24 };
+tcs3200 colorLeft = { 29, 30, 31, 32, 33 };
+tcs3200 colorRight = { 35, 36, 37, 38, 39 };
+int sensores_meio[3] = { 25 , 27 , 26 };
 
-
-int sensores_meio[3] = { 47 , 49, 51 }; 
   
 void setSensoresMeio()
 {
@@ -42,7 +42,6 @@ int getColorLeft() {
 }
 
 int getColorRight(){
- 
   const int intervalo = 100;
   int estado_anterior = 0;
   
@@ -93,7 +92,7 @@ bool verificar_verde(char lado){
   return true;
 }
 int filter_color_line_right(int white) {
-  if(white < 40)
+  if(white < 100)
     {
       return 1;
     }
@@ -102,28 +101,11 @@ int filter_color_line_right(int white) {
     return 0;
   }
 }
-int filter_color_line (int white) {
-  if(white < 150) {
+int filter_color_line(int white) {
+  if(white < 28) {
     return 1;
   }
   else{
     return 0;
   }
-}
-
-void printSensoresMeio(int* data){
-   Serial.print("DATA -> ");
-   
-    //  Printar dados do Sensores
-    Serial.print(" ESQUERDA PONTA: ");
-    Serial.print(data[0]);
-    Serial.print(" ESQUERDA: ");
-    Serial.print(data[1]);
-    Serial.print(" MEIO");
-    Serial.print(data[2]);
-    Serial.print(" DIREITA: ");
-    Serial.print(data[3]);
-    Serial.print(" DIREITA PONTA: ");
-    Serial.print(data[4]);
-    Serial.println(); 
 }
